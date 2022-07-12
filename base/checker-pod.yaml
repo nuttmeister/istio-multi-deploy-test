@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: multi-deploy-checker
+    app.kubernetes.io/name: multi-deploy-checker
+  annotations:
+    sidecar.istio.io/inject: "false"
+  name: multi-deploy-checker
+spec:
+  containers:
+    - image: alpine:latest
+      name: multi-deploy-checker
+      command:
+        [
+          "sh",
+          "-c",
+          'apk add curl && echo "sleeping 100s before start" && sleep 100 && echo "started checking, errors will be shown below..." && while sleep 0.1; do CODE=$(curl -m 1 -s -o /dev/null -w "%{http_code}\n" "http://multi-deploy"); if [ "${CODE}" != "200" ]; then echo ${CODE}; fi; done',
+        ]
+      stdin: true
+      tty: true

@@ -1,0 +1,13 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: multi-deploy
+spec:
+  action: ALLOW
+  selector:
+    matchLabels:
+      app: multi-deploy
+  rules:
+    - to:
+        - operation:
+            ports: ["80"]

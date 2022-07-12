@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: multi-deploy
+spec:
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+        proxy.istio.io/config: |
+          terminationDrainDuration: 300s
+          holdApplicationUntilProxyStarts: true
+    spec:
+      containers:
+        - name: multi-deploy
+          command:
+            [
+              "bash",
+              "-c",
+              "echo 'sleeping 90s before start' && sleep 90 && nginx -g 'daemon off;' && echo 'exiting... will sleep for 10s' && sleep 10 && exit 0",
+            ]

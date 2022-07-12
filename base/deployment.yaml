@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: multi-deploy
+    app.kubernetes.io/name: multi-deploy
+  name: multi-deploy
+spec:
+  selector:
+    matchLabels:
+      app: multi-deploy
+  template:
+    metadata:
+      labels:
+        app: multi-deploy
+        app.kubernetes.io/name: multi-deploy
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      terminationGracePeriodSeconds: 300
+      containers:
+        - image: nginx:latest
+          name: multi-deploy
+          resources:
+            limits:
+              cpu: 100m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          command:
+            [
+              "sh",
+              "-c",
+              "echo 'sleeping 90s before start' && sleep 90 && nginx -g 'daemon off;' && echo 'exiting... will sleep for 295s' && sleep 295",
+            ]
+          startupProbe:
+            httpGet:
+              path: /
+              port: 80
+            failureThreshold: 20
+            periodSeconds: 5

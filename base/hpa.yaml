@@ -1,0 +1,15 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  labels:
+    app: multi-deploy
+    app.kubernetes.io/name: multi-deploy
+  name: multi-deploy
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: multi-deploy
+  minReplicas: 2
+  maxReplicas: 4
+  targetCPUUtilizationPercentage: 50
